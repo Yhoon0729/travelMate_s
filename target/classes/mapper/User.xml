@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xml.user">
+
+	<select id="userList" resultType="User">
+		select * from users
+	</select>
+	
+	<select id="getUser" parameterType="map" resultType="User">
+        select * from users where userId = #{userId}
+    </select>
+    
+	<insert id="userInsert" parameterType="User">
+		insert into users values (#{userId}, #{userPass}, #{userName},   #{userTel}, #{userAge}, #{userGen})
+	</insert>
+	
+	<update id="userUpdate" parameterType="User">
+		update users set 
+		userName=#{userName}, userTel=#{userTel}, userAge=#{userAge}, userGen=#{userGen} where userId=#{userId}
+	</update>
+	
+	<delete id="userDelete" parameterType="map">
+		delete from users where userId=#{userId}
+	</delete>
+	
+	<update id="chgPassUser" parameterType="map">
+		update users set userPass = #{chgPass} where userId = #{userId}
+	</update>
+</mapper>

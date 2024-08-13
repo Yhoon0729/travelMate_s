@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/mvc
+             http://www.springframework.org/schema/mvc/spring-mvc.xsd
+             http://www.springframework.org/schema/context
+             http://www.springframework.org/schema/context/spring-context.xsd
+             http://www.springframework.org/schema/aop
+             http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<mvc:annotation-driven />
+	
+	<mvc:default-servlet-handler/>
+
+
+	<!-- component-scan 설치 -->
+	<context:component-scan  base-package="controller, dao, aop" />
+
+	<context:annotation-config />
+
+	<!-- viewResolver 는 URL 경로의 앞과 뒤에 반복되는 내용을 자동으로 연결해 준다. URL mapping 이 될 
+		때 이 형식을 반드시 맞춰줘야 한다. -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/main/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		
+		<property name="driverClass">
+			<value>oracle.jdbc.OracleDriver</value>
+		</property>
+		
+		<property name="jdbcUrl">
+			<value>jdbc:oracle:thin:@localhost:1521:xe</value>
+		</property>
+		
+		<property name="user">
+			<value>kic24</value>
+		</property>
+		
+		<property name="password">
+			<value>1234</value>
+		</property>
+		
+		<property name="maxPoolSize">
+			<value>20</value>
+		</property>
+		
+		<!-- 최대 연결 객체 갯수 -->
+		<property name="minPoolSize">
+			<value>3</value>
+		</property> 
+		
+		<!-- 최소 연결 객체 갯수 -->
+		<property name="initialPoolSize">
+			<value>5</value>
+		</property> 
+		
+		<!-- 초기 연결 객체 갯수 -->
+		<property name="acquireIncrement">
+			<value>5</value>
+		</property> 
+		
+		<!-- 연결 객체 증가 갯수 -->
+	</bean>
+	
+	
+	<!-- mybatis db -->
+
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		
+		<property name="dataSource" ref="dataSource" />
+		
+		<property name="configLocation"
+			value="classpath:util/mybatis-config.xml" />
+		
+	</bean>
+	
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+
+	
+	<!-- AOP 적용 시작 -->
+	<!-- AOP 적용으로 실행할 부가기능 -->
+	<bean id="log" class="aop.LogAOP" />
+	
+	
+	<!-- AOP 설정 -->
+	<aop:config>
+
+		<!-- 감시할 핵심 기능의 경로 지정 -->
+		<aop:pointcut 
+			expression="execution ( public * controller.*Controller.*(..))"
+			id="controllerLog"/>
+		
+		<!-- 핵심 기능에 조건에 맞는 기능 발생시 수행해야할 부가 기능 -->
+		<aop:aspect id="logAspect" ref="log">
+			
+			<aop:after-returning method="logPrint"
+				returning="returning" 
+				pointcut-ref="controllerLog"/>
+			
+		
+		</aop:aspect>
+	
+
+	</aop:config>
+		
+<mvc:resources mapping="/img/**" location="/img/" />
+
+</beans>

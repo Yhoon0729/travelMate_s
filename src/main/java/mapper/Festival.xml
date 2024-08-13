@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="festival">
+
+	<!-- 축제 리스트 전체 가져오기 -->
+	<select id="getFestivalListAll" resultType="Festival">
+		select * from festival
+	</select>
+	
+	<!-- 축제 상세 내역 -->
+	<select id="getFestivalInfo" parameterType="String" resultType="Festival">
+		select * from festival
+		where code = #{code}
+	</select>
+	
+	<!-- 국가 선택 -->
+	<select id="getCountry" resultType="String">
+		select * from country
+		where name like #{name}
+	</select>
+	
+	
+	<!-- 축제 입력 -->
+	<insert id="insertFestival" parameterType="Festival">
+		insert into festival values (  concat( #{code}, festivalseq.nextval ),
+		#{season}, #{countryCode}, #{country}, #{festivalName}, #{startDay}, #{endDay},
+		#{info1}, #{info2}, #{info3},  #{url1}, #{url2}, #{url3} )
+	</insert>
+
+	<!-- 축제 리스트 -->
+	<select id="getFestivalList" resultType="Festival">
+		select * from festival
+		order by startday desc
+	</select>
+
+	<!-- 축제 업데이트 -->
+	<update id="festivalUpdate" parameterType="Festival">
+		UPDATE festival	SET  
+		festivalName = #{festivalName},	
+		startDay = #{startDay},	endDay = #{endDay},
+		info1 = #{info1}, info2 = #{info2}, info3 = #{info3},
+		url1 = #{url1}, url2 = #{url2}, url3 = #{url3}
+		WHERE code = #{code}
+	</update>
+
+	<!-- 축제 삭제 -->
+	<delete id="festivalDelete" parameterType="String">
+		DELETE FROM festival WHERE code = #{code}
+	</delete>
+
+	
+</mapper> 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xml.board">
+	<insert id="insertBoard" parameterType="board">
+		insert into board values 
+		(boardseq.nextval,#{userId},#{boardSub},#{boardCon},sysdate,0,#{boardId},#{boardFile})
+	</insert>
+	
+	<select id="boardList" parameterType="map" resultType="board">
+		select * from (select rownum rnum, a.* from 
+		(select * from board where boardId = #{boardId} order by boardNum desc) a)
+	    where rnum between #{start} and #{end}
+	</select>
+	
+	<select id="getBoard" parameterType="int" resultType="board">
+		select * from board where boardNum = #{boardNum}
+	</select>
+	
+	<update id="boardUpdate" parameterType="board">
+		update board set
+		subject=#{subject}, content=#{content}, file1=#{file1} where boardNum=#{boardNum}
+	</update>
+	
+	<delete id="boardDelete" parameterType="int">
+		delete from board where boardNum=#{boardNum}
+	</delete>
+	
+	<update id="addReadCount" parameterType="int">
+		update board set boardCnt = boardCnt+1 where boardNum = #{boardNum}
+	</update>
+	
+	<select id="boardCount" parameterType="map" resultType="int">
+		select nvl(count(*), 0) from board where boardId = #{boardId}
+	</select>
+	
+	<insert id="insertComment" parameterType="map">
+		insert into boardcomment values (boardcommseq.nextval,#{boardNum},#{userId},#{commCon},sysdate)
+	</insert>
+	
+	<select id="getCommentCount" parameterType="int" resultType="int">
+		select nvl(count(*), 0) from boardcomment where boardNum = #{boardNum}
+	</select>
+	
+	<select id="commentList" parameterType="int" resultType="BoardComment">
+		select * from boardcomment where boardNum = #{boardNum} order by commDate desc
+	</select>
+	
+	<select id="getDate" resultType="date">
+		select sysdate from dual
+	</select>
+</mapper>

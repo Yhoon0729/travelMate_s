@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="admin">
+
+	<!-- 축제 입력 -->
+	<insert id="insertActLog" parameterType="AdmActLog">
+		insert into admActLog values(
+		admActLogSeq.nextval, #{userId}, #{act}, sysdate )
+	</insert>
+	
+	<!-- 로그인 기록 보기 -->
+	<select id="logList" parameterType="Map" resultType="AdmActLog">
+		select * from
+		(select rownum num, act.*
+		from (select *
+		from admactlog
+		order by logdate desc) act) final
+		where num between #{listStart} and #{listEnd}
+	</select>
+	
+	<!-- 로그인 기록 보기 -->
+	<select id="logListCount" resultType="int">
+		select COUNT(*) from admactlog
+	</select>
+	
+	
+	
+	<!-- 로그 통계 보기 -->
+ 	<select id="actAnalList" resultType="AdmActAnal">
+		select act, count(act) count
+		from admactlog
+		group by act
+		order by act
+	</select>
+
+</mapper> 

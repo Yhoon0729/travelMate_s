@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 1. 기본 설정 1 붙여넣기 -->
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- 2. 기본 설정 2 붙여넣기 -->
+<configuration>
+
+	<!-- Null 에 대한 처리를 설정한다. -->
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+
+	<!-- 이름을 간략히 사용할 수 있도록 도와준다. 없어도 무방 model (DTO) 의 이름을 간략히 사용하기 위해 사용한다. -->
+	<typeAliases>
+		<!-- 절대 경로 (src 기준) 롤 alias 지정, mouse 를 올리면 변화가 생겨야 정상 mapper 에서 paramterType, 
+			resultType 지정시 경로를 모두 사용하지 않고 alias 를 사용하여 표현하게 해준다. -->
+
+		<!-- 회원 관련 -->
+		<typeAlias type="model.User" alias="User" />
+		
+		<!-- 게시판 관련 -->
+		<typeAlias type="model.Board" alias="board" />
+		<typeAlias type="model.BoardComment" alias="BoardComment" />
+		
+		<!-- 축제 관련 -->
+		<typeAlias type="model.Festival" alias="Festival" />
+
+		<!-- 항공편 관련 -->
+		<typeAlias type="model.Airport" alias="Airport" />
+		<typeAlias type="model.AirInfo" alias="AirInfo" />
+		<typeAlias type="model.Country" alias="County" />
+		<typeAlias type="model.AirBooking" alias="AirBooking" />
+
+		<!-- 호텔 관련 -->
+		<typeAlias type="model.Hotel" alias="hotel" />
+		<typeAlias type="model.HotelBooking" alias="hotelbooking" />
+
+
+		<!-- Log 관련 -->
+		<typeAlias type="model.AdmActLog" alias="AdmActLog" />
+		<typeAlias type="model.AdmActAnal" alias="AdmActAnal" />
+
+	</typeAliases>
+
+	<!-- 3. 기본설정 3 : 변경없이 사용할 것 : 참고 : 오라클 -->
+
+	<environments default="oracle">
+		<environment id="oracle">
+			<transactionManager type="JDBC" />
+
+			<dataSource type="POOLED">
+
+				<property name="driver" value="oracle.jdbc.OracleDriver" />
+				<property name="url"
+					value="jdbc:oracle:thin:@localhost:1521:xe" />
+				<property name="username" value="kic24" />
+				<property name="password" value="1234" />
+			</dataSource>
+
+		</environment>
+	</environments>
+
+	<!-- XML, Query 방식을 통해 mybatis 적용 mapper 를 설정하면 반드시 연결해 줘야 한다. -->
+	<mappers>
+		<!-- 회원관련 매퍼 -->
+		<mapper resource="mapper/User.xml" />
+		
+		<!-- 게시판 관련 매퍼 -->
+		<mapper resource="mapper/Board.xml" />
+
+		<!-- 축제관련 매퍼 -->
+		<mapper resource="mapper/Festival.xml" />
+
+		<!-- 항공사관련 매퍼 -->
+		<mapper resource="mapper/AirMapper.xml" />
+
+		<!-- 호텔 관련 매퍼 -->
+		<mapper resource="mapper/Hotel.xml" />
+
+		<!-- 렌트카 관련 매퍼 -->
+		<mapper class="mapper.RentAnno" />
+
+		<!-- 예약 관련 매퍼 -->
+		<mapper class="mapper.BookingAnno" />
+
+		<!-- Amin관련 매퍼 -->
+		<mapper resource="mapper/AdmMapper.xml" />
+
+
+
+
+	</mappers>
+
+</configuration>
+
+
+
+
+
+
+
+
+
+
+
+
+
